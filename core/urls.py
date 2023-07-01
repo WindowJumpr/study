@@ -3,5 +3,7 @@ from .views import *
 
 
 urlpatterns = [
-    path('', test_request)
+    path('add-subject/', SubjectCreate.as_view(), name='add-subject'),
+    path('subject-detail/<int:pk>/', SubjectDetail.as_view(), name='subject-detail'),
+    path('subject-update/<int:pk>', SubjectUpdate.as_view(), name='subject-update'),
 ]
