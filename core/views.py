@@ -15,9 +15,17 @@ class SubjectCreate(generic.CreateView):
 class SubjectUpdate(generic.UpdateView):
     model = Subject
     form_class = SubjectForm
-    template_name = 'core/subject_update.html'
+
+
+class SubjectList(generic.ListView):
+    model = Subject
 
 
 class SubjectDetail(generic.DetailView):
     model = Subject
-    template_name = 'core/subject_detail.html'
+
+
+class StudentList(generic.ListView):
+    queryset = User.objects.filter(groups__name='Student')
+    paginate_by = 25
+    template_name = 'core/student_list.html'

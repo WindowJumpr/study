@@ -3,7 +3,9 @@ from .views import *
 
 
 urlpatterns = [
-    path('add-subject/', SubjectCreate.as_view(), name='add-subject'),
-    path('subject-detail/<int:pk>/', SubjectDetail.as_view(), name='subject-detail'),
+    path('subject-create/', SubjectCreate.as_view(), name='add-subject'),
     path('subject-update/<int:pk>', SubjectUpdate.as_view(), name='subject-update'),
+    path('subject-detail/<int:pk>/', SubjectDetail.as_view(), name='subject-detail'),
+    path('subject-list/', SubjectList.as_view(), name='subject-list'),
+    path('student-list/', StudentList.as_view(), name='student-list'),
 ]
