@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save, pre_save, m2m_changed
+from django.dispatch.dispatcher import receiver
 from django.contrib.auth.models import User, Group
 from django.urls import reverse
 
@@ -16,10 +18,16 @@ class Subject(models.Model):
         return reverse('subject-detail', kwargs={'pk': self.pk})
 
 
+class Semester(models.Model):
+    name = models.CharField(max_length=10)
+    subjects = models.ManyToManyField(Subject)
+    current = models.BooleanField()
+
+
 class UniversityGroup(models.Model):
     name = models.CharField(max_length=10)
     students = models.ManyToManyField(User, through="StudentDetail")
-    subjects = models.ManyToManyField(Subject)
+    semesters = models.ManyToManyField(Semester, blank=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -55,4 +63,12 @@ class RecordSubject(models.Model):
     semester = models.IntegerField()
     mark = models.IntegerField(null=True)
     exam = models.BooleanField(default=False)
-    
+
+
+@receiver(post_save, sender=UniversityGroup)
+def create_semesters(sender, instance, created, **kwargs):
+    if created:
+        semester_names = [f'{s} semester {instance.name}' for s in range(1, 5)]
+        for i, name in enumerate(semester_names):
+            current = True if i == 0 else False
+            Semester.objects.create(name=name, current=current).save()
