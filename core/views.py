@@ -1,7 +1,7 @@
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import *
-from .forms import SubjectModelForm
+from .forms import SubjectModelForm, UniversityGroupModelForm, StudentDetailForm
 
 
 class SubjectCreate(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
@@ -32,8 +32,15 @@ class SubjectDetail(generic.DetailView):
 
 class UniversityGroupCreate(generic.CreateView):
     model = UniversityGroup
+    form_class = UniversityGroupModelForm
     template_name = 'core/uni_group/uni_group_create.html'
-    fields = ('name', )
+    success_url = 'students-add/'
+
+
+class UniversityGroupAddStudent(generic.CreateView):
+    model = StudentDetail
+    form_class = StudentDetailForm
+    template_name = 'core/uni_group/uni_group_create.html'
 
 
 class StudentList(generic.ListView):

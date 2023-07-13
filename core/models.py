@@ -39,6 +39,19 @@ class UniversityGroup(models.Model):
         return reverse('university-group-detail', kwargs={'pk': self.pk})
 
 
+@receiver(post_save, sender=UniversityGroup)
+def create_semesters(sender, instance, created, **kwargs):
+    if created:
+        semester_names = [f'{s} semester {instance.name}' for s in range(1, 5)]
+        for i, name in enumerate(semester_names):
+            current = True if i == 0 else False
+            Semester.objects.create(name=name, current=current).save()
+        semester_queryset = Semester.objects.filter(name__contains=instance.name)
+        for semester in semester_queryset:
+            instance.semesters.add(semester)
+            instance.save()
+
+
 class StudentDetail(models.Model):
     FORM_OF_STUDY_CHOICES = (
         ('B', 'Budget day form'),
@@ -67,15 +80,3 @@ class RecordSubject(models.Model):
     mark = models.IntegerField(null=True)
     exam = models.BooleanField(default=False)
 
-
-@receiver(post_save, sender=UniversityGroup)
-def create_semesters(sender, instance, created, **kwargs):
-    if created:
-        semester_names = [f'{s} semester {instance.name}' for s in range(1, 5)]
-        for i, name in enumerate(semester_names):
-            current = True if i == 0 else False
-            Semester.objects.create(name=name, current=current).save()
-        semester_queryset = Semester.objects.filter(name__contains=instance.name)
-        for semester in semester_queryset:
-            instance.semesters.add(semester)
-            instance.save()

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Subject
+from .models import Subject, UniversityGroup, StudentDetail
 
 
 class SubjectModelForm(forms.ModelForm):
@@ -11,3 +11,17 @@ class SubjectModelForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = '__all__'
+
+
+class UniversityGroupModelForm(forms.ModelForm):
+
+    class Meta:
+        model = UniversityGroup
+        fields = ('name', )
+
+
+class StudentDetailForm(forms.ModelForm):
+    class Meta:
+        model = StudentDetail
+        fields = '__all__'
+
