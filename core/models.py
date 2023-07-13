@@ -43,13 +43,17 @@ class UniversityGroup(models.Model):
 def create_semesters(sender, instance, created, **kwargs):
     if created:
         semester_names = [f'{s} semester {instance.name}' for s in range(1, 5)]
+
+        semesters = []
         for i, name in enumerate(semester_names):
             current = True if i == 0 else False
-            Semester.objects.create(name=name, current=current).save()
-        semester_queryset = Semester.objects.filter(name__contains=instance.name)
-        for semester in semester_queryset:
-            instance.semesters.add(semester)
-            instance.save()
+            semester = Semester(name=name, current=current)
+            semesters.append(semester)
+
+        Semester.objects.bulk_create(semesters)
+
+        instance.semesters.add(*semesters)
+        instance.save()
 
 
 class StudentDetail(models.Model):

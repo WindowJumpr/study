@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+
 from .models import Subject, UniversityGroup, StudentDetail
 
 
@@ -21,7 +22,10 @@ class UniversityGroupModelForm(forms.ModelForm):
 
 
 class StudentDetailForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['student'].queryset = User.objects.filter(groups__isnull=True)
+
     class Meta:
         model = StudentDetail
-        fields = '__all__'
-
+        exclude = ('university_group', )
